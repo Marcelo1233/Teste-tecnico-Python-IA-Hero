@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Curso de Python com IA</title>
+    <meta name="theme-color" content="#070913" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root{
+        --bg0:#070913;
+        --bg1:#0b1022;
+        --card:#0b1226cc;
+        --stroke:#ffffff14;
+        --text:#eaf0ff;
+        --muted:#b9c3de;
+        --muted2:#8ea0c9;
+        --blue:#4da3ff;
+        --violet:#a855f7;
+        --neon:#7c3aed;
+        --ok:#22c55e;
+        --shadow: 0 18px 50px #00000080;
+        --shadow2: 0 12px 30px #00000066;
+        --radius: 18px;
+      }
+ 
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color:var(--text);
+        position:relative;
+        isolation:isolate;
+        background:
+          radial-gradient(1200px 800px at 20% 20%, #1b2a6a55 0%, transparent 60%),
+          radial-gradient(1000px 700px at 80% 30%, #7c3aed33 0%, transparent 55%),
+          radial-gradient(900px 600px at 55% 85%, #00d4ff14 0%, transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x:hidden;
+      }
+ 
+      .aurora{
+        position:fixed;
+        inset:-45vmax;
+        z-index:0;
+        pointer-events:none;
+        opacity:.42;
+        filter: blur(46px) saturate(150%);
+        background:
+          radial-gradient(45% 55% at 18% 28%, #4da3ffb3 0%, transparent 62%),
+          radial-gradient(45% 55% at 82% 22%, #a855f7b3 0%, transparent 60%),
+          radial-gradient(42% 52% at 65% 78%, #7c3aed99 0%, transparent 62%),
+          radial-gradient(46% 56% at 32% 84%, #0ea5e999 0%, transparent 62%),
+          radial-gradient(70% 70% at 50% 50%, #000000 0%, #000000 40%, transparent 72%);
+        mix-blend-mode: screen;
+        transform: translate3d(0,0,0);
+        will-change: transform, filter, opacity;
+        animation: auroraMove 16s ease-in-out infinite;
+      }
+
+      .aurora::after{
+        content:"";
+        position:absolute;
+        inset:-12%;
+        background:
+          radial-gradient(40% 55% at 25% 35%, #4da3ff99 0%, transparent 62%),
+          radial-gradient(40% 55% at 78% 38%, #a855f799 0%, transparent 62%),
+          radial-gradient(46% 60% at 55% 72%, #0ea5e977 0%, transparent 68%),
+          radial-gradient(70% 70% at 50% 50%, #000000 0%, #000000 38%, transparent 72%);
+        opacity:.7;
+        filter: blur(56px) saturate(145%);
+        mix-blend-mode: screen;
+        transform: translate3d(0,0,0);
+        will-change: transform, filter, opacity;
+        animation: auroraMove2 22s ease-in-out infinite;
+      }
+
+      @keyframes auroraMove{
+        0%{ transform: translate3d(-3%, -2%, 0) rotate(-6deg) scale(1.04); filter: blur(46px) saturate(150%) hue-rotate(0deg); opacity:.40; }
+        50%{ transform: translate3d(3%, 2%, 0) rotate(7deg) scale(1.10); filter: blur(54px) saturate(165%) hue-rotate(18deg); opacity:.48; }
+        100%{ transform: translate3d(-3%, -2%, 0) rotate(-6deg) scale(1.04); filter: blur(46px) saturate(150%) hue-rotate(0deg); opacity:.40; }
+      }
+
+      @keyframes auroraMove2{
+        0%{ transform: translate3d(2%, -3%, 0) rotate(4deg) scale(1.02); opacity:.62; }
+        50%{ transform: translate3d(-2%, 3%, 0) rotate(-5deg) scale(1.08); opacity:.74; }
+        100%{ transform: translate3d(2%, -3%, 0) rotate(4deg) scale(1.02); opacity:.62; }
+      }
+
+      a{color:inherit}
+      .container{
+        width:min(1160px, 100%);
+        margin-inline:auto;
+        padding-inline:20px;
+      }
+ 
+      .hero{
+        position:relative;
+        z-index:1;
+        padding:72px 0 64px;
+      }
+ 
+      .hero::before{
+        content:"";
+        position:absolute;
+        inset:-120px 0 -80px;
+        background:
+          linear-gradient(to right, #ffffff08 1px, transparent 1px),
+          linear-gradient(to bottom, #ffffff08 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(600px 420px at 25% 30%, #000 0%, transparent 70%);
+        opacity:.8;
+        pointer-events:none;
+      }
+ 
+      .hero::after{
+        content:"";
+        position:absolute;
+        inset:-100px 0 -120px;
+        background:
+          radial-gradient(700px 450px at 70% 40%, #4da3ff22, transparent 65%),
+          radial-gradient(650px 420px at 35% 70%, #a855f722, transparent 65%);
+        filter: blur(18px);
+        opacity:.9;
+        pointer-events:none;
+      }
+ 
+      .topbar{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:16px;
+        padding:14px 0 22px;
+        position:relative;
+        z-index:2;
+      }
+ 
+      .brand{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        font-weight:700;
+        letter-spacing:-0.02em;
+      }
+ 
+      .logo{
+        width:34px;height:34px;
+        border-radius:12px;
+        box-shadow:
+          0 10px 30px #4da3ff33,
+          0 8px 18px #a855f733,
+          inset 0 0 0 1px #ffffff1f;
+        display:block;
+      }
+ 
+      .pill{
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 12px;
+        border-radius:999px;
+        background: linear-gradient(180deg, #0b1226cc, #0b122677);
+        border:1px solid var(--stroke);
+        box-shadow: 0 14px 34px #00000055, inset 0 1px 0 #ffffff12;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        color:var(--muted);
+        font-weight:600;
+        font-size:13px;
+        letter-spacing:-0.01em;
+        white-space:nowrap;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+ 
+      .pill:hover{
+        border-color:#4da3ff2a;
+        box-shadow: 0 18px 42px #00000066, inset 0 1px 0 #ffffff18;
+        transform: translateY(-1px);
+      }
+
+      .pill .dot{
+        width:10px;height:10px;border-radius:999px;
+        background: radial-gradient(circle at 30% 30%, #ffffffcc, transparent 55%), linear-gradient(180deg, var(--blue), var(--violet));
+        box-shadow: 0 0 0 4px #7c3aed22, 0 0 20px #4da3ff55;
+      }
+ 
+      .grid{
+        display:grid;
+        grid-template-columns: 1.06fr 0.94fr;
+        gap:38px;
+        align-items:center;
+        position:relative;
+        z-index:2;
+      }
+ 
+      h1{
+        margin:14px 0 12px;
+        font-size: clamp(34px, 4.2vw, 56px);
+        line-height:1.02;
+        letter-spacing:-0.04em;
+      }
+ 
+      .headline-accent{
+        display:inline-block;
+        background: linear-gradient(90deg, #eaf0ff, #b9c3de 25%, #4da3ff 55%, #a855f7 85%);
+        -webkit-background-clip:text;
+        background-clip:text;
+        color:transparent;
+        filter: drop-shadow(0 12px 22px #4da3ff18);
+      }
+ 
+      .subheadline{
+        margin:0 0 22px;
+        font-size: clamp(16px, 1.35vw, 19px);
+        line-height:1.55;
+        color:var(--muted);
+        max-width: 54ch;
+      }
+ 
+      .bullets{
+        display:grid;
+        gap:10px;
+        padding:0;
+        margin: 0 0 26px;
+        list-style:none;
+        max-width: 62ch;
+      }
+ 
+      .bullets li{
+        display:flex;
+        gap:12px;
+        align-items:flex-start;
+        padding:10px 12px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #0b1226b3, #0b122655);
+        border:1px solid #ffffff14;
+        box-shadow: 0 16px 36px #0000004d, inset 0 1px 0 #ffffff10;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: var(--text);
+        transform: translateZ(0);
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+
+      .bullets li:hover{
+        transform: translateY(-2px);
+        border-color:#a855f72a;
+        box-shadow: 0 22px 48px #00000066, inset 0 1px 0 #ffffff14;
+      }
+ 
+      .icon{
+        width:22px;height:22px;
+        border-radius:8px;
+        flex:0 0 22px;
+        background:
+          radial-gradient(10px 10px at 35% 35%, #ffffffdd 0%, transparent 60%),
+          linear-gradient(180deg, #2dd4ff, #7c3aed);
+        box-shadow: 0 0 0 4px #4da3ff1a, 0 0 18px #7c3aed33;
+        position:relative;
+        margin-top:1px;
+      }
+ 
+      .icon svg{
+        position:absolute;
+        inset:0;
+        margin:auto;
+        width:14px;height:14px;
+        opacity:.92;
+        fill:#07101f;
+      }
+ 
+      .bullets strong{
+        font-weight:700;
+      }
+ 
+      .actions{
+        display:flex;
+        gap:12px;
+        flex-wrap:wrap;
+        align-items:center;
+        margin-top: 6px;
+      }
+ 
+      .btn{
+        appearance:none;
+        border:0;
+        cursor:pointer;
+        font-weight:700;
+        letter-spacing:-0.02em;
+        border-radius: 14px;
+        padding: 13px 16px;
+        font-size: 15px;
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        text-decoration:none;
+        user-select:none;
+        position:relative;
+        transform: translateZ(0);
+        transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+        outline: none;
+      }
+ 
+      .btn-primary{
+        color:#06101f;
+        overflow:hidden;
+        background:
+          radial-gradient(120px 80px at 20% 20%, #ffffffbb 0%, transparent 55%),
+          linear-gradient(90deg, #4da3ff, #a855f7);
+        box-shadow:
+          0 16px 42px #4da3ff2c,
+          0 12px 32px #a855f72a,
+          0 10px 22px #00000055;
+      }
+ 
+      .btn-primary::before{
+        content:"";
+        position:absolute;
+        inset:-2px;
+        border-radius: 16px;
+        background: linear-gradient(120deg, transparent 0%, #ffffffaa 18%, transparent 40%);
+        opacity:0;
+        transform: translateX(-120%);
+        transition: opacity .18s ease, transform .75s cubic-bezier(.2,.8,.2,1);
+        mix-blend-mode: overlay;
+        pointer-events:none;
+      }
+
+      .btn-primary::after{
+        content:"";
+        position:absolute;
+        inset:-1px;
+        border-radius: 15px;
+        background: linear-gradient(90deg, #4da3ff, #a855f7, #4da3ff);
+        filter: blur(12px);
+        opacity:.42;
+        z-index:-1;
+        transition: opacity .18s ease, transform .18s ease;
+      }
+ 
+      .btn-secondary{
+        color: var(--text);
+        background: #0b1226aa;
+        border:1px solid #ffffff22;
+        box-shadow: 0 10px 22px #00000044;
+      }
+ 
+      .btn:hover{
+        transform: translateY(-2px);
+      }
+ 
+      .btn-primary:hover{
+        box-shadow:
+          0 22px 64px #4da3ff3b,
+          0 18px 52px #a855f73a,
+          0 14px 30px #00000070;
+      }
+ 
+      .btn-primary:hover::before{
+        opacity:.45;
+        transform: translateX(120%);
+      }
+
+      .btn-primary:hover::after{
+        opacity:.62;
+        transform: translateY(2px);
+      }
+ 
+      .btn:active{
+        transform: translateY(0px) scale(0.99);
+      }
+ 
+      .btn:focus-visible{
+        box-shadow: 0 0 0 4px #4da3ff33, 0 0 0 8px #a855f71f, var(--shadow2);
+      }
+ 
+      .btn .arrow{
+        width:18px;height:18px;
+        display:inline-grid;
+        place-items:center;
+        border-radius:10px;
+        background:#06101f1a;
+      }
+ 
+      .btn-secondary .arrow{
+        background:#ffffff14;
+      }
+ 
+      .trust{
+        display:flex;
+        gap:12px;
+        align-items:center;
+        flex-wrap:wrap;
+        margin-top: 16px;
+        color: var(--muted2);
+        font-size: 13px;
+        font-weight:600;
+      }
+ 
+      .trust .mini{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:8px 10px;
+        border-radius:999px;
+        border:1px solid #ffffff14;
+        background: linear-gradient(180deg, #0b1226b3, #0b122655);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+ 
+      .trust .badge{
+        width:18px;height:18px;border-radius:8px;
+        background: linear-gradient(180deg, #22c55e, #16a34a);
+        box-shadow: 0 0 0 4px #22c55e14;
+      }
+ 
+      .visual{
+        position:relative;
+      }
+ 
+      .stage{
+        border-radius: var(--radius);
+        background:
+          radial-gradient(240px 180px at 30% 20%, #4da3ff26, transparent 60%),
+          radial-gradient(240px 180px at 70% 20%, #a855f726, transparent 60%),
+          linear-gradient(180deg, #0b1226cc, #090f22cc);
+        border:1px solid #ffffff14;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        overflow:hidden;
+        min-height: 460px;
+        position:relative;
+        isolation:isolate;
+        transform: translateZ(0);
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      }
+ 
+      .stage:hover{
+        transform: translateY(-2px);
+        border-color:#4da3ff2a;
+        box-shadow: 0 26px 74px #00000080, 0 18px 52px #4da3ff14, 0 18px 52px #a855f714;
+      }
+
+      .stage::before{
+        content:"";
+        position:absolute;
+        inset:-2px;
+        background:
+          radial-gradient(500px 220px at 50% -10%, #4da3ff22, transparent 65%),
+          radial-gradient(420px 220px at 60% 30%, #a855f722, transparent 65%);
+        filter: blur(10px);
+        opacity:.9;
+        z-index:0;
+      }
+ 
+      .stage::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:
+          linear-gradient(to right, #ffffff10 1px, transparent 1px),
+          linear-gradient(to bottom, #ffffff0c 1px, transparent 1px);
+        background-size: 34px 34px;
+        opacity:.35;
+        mask-image: radial-gradient(380px 280px at 60% 40%, #000 0%, transparent 70%);
+        z-index:0;
+      }
+ 
+      .mock{
+        position:absolute;
+        inset:18px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #060b18b3, #060b1888);
+        border:1px solid #ffffff14;
+        z-index:1;
+        overflow:hidden;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+ 
+      .mock-top{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        padding:12px 14px;
+        border-bottom:1px solid #ffffff12;
+        background: linear-gradient(180deg, #0b1226bb, #0b122688);
+      }
+ 
+      .window-dots{
+        display:flex;
+        gap:7px;
+        align-items:center;
+      }
+ 
+      .dot{
+        width:10px;height:10px;border-radius:999px;
+        background:#ffffff22;
+      }
+      .dot.red{background:#ff4d4d66}
+      .dot.yellow{background:#ffcc0066}
+      .dot.green{background:#22c55e66}
+ 
+      .mock-title{
+        font-size:12px;
+        color:#c9d4f0;
+        font-weight:700;
+        letter-spacing:-0.01em;
+        opacity:.95;
+      }
+ 
+      .mock-body{
+        display:grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap:12px;
+        padding:14px;
+        height: calc(100% - 46px);
+      }
+ 
+      .code{
+        border-radius:14px;
+        background: linear-gradient(180deg, #070d1ecc, #070d1e88);
+        border:1px solid #ffffff12;
+        padding:14px 14px;
+        overflow:hidden;
+        position:relative;
+      }
+ 
+      pre{
+        margin:0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12.5px;
+        line-height: 1.55;
+        color:#dbe7ff;
+        white-space: pre;
+      }
+ 
+      .tok-k{color:#a855f7}
+      .tok-f{color:#4da3ff}
+      .tok-s{color:#22c55e}
+      .tok-n{color:#fbbf24}
+      .tok-c{color:#93a4cf}
+ 
+      .cards{
+        display:grid;
+        gap:12px;
+        align-content:start;
+      }
+ 
+      .card{
+        border-radius:14px;
+        background: linear-gradient(180deg, #0b1226b3, #0b122655);
+        border:1px solid #ffffff14;
+        box-shadow: 0 18px 46px #0000004d, inset 0 1px 0 #ffffff12;
+        padding:12px 12px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        transform: translateZ(0);
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+ 
+      .card:hover{
+        transform: translateY(-2px) scale(1.01);
+        border-color:#4da3ff2a;
+        box-shadow: 0 26px 60px #00000066, inset 0 1px 0 #ffffff18;
+      }
+ 
+      .card .label{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        font-size:12px;
+        color:#c7d2f3;
+        font-weight:700;
+        letter-spacing:-0.01em;
+      }
+ 
+      .chip{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        font-size:11px;
+        font-weight:800;
+        color:#06101f;
+        padding:6px 8px;
+        border-radius:999px;
+        background: linear-gradient(90deg, #4da3ff, #a855f7);
+        box-shadow: 0 12px 30px #4da3ff1f, 0 12px 30px #a855f71f;
+      }
+ 
+      .metric{
+        margin-top:10px;
+        display:grid;
+        gap:8px;
+      }
+ 
+      .bar{
+        height:10px;
+        border-radius:999px;
+        background:#ffffff12;
+        overflow:hidden;
+        border:1px solid #ffffff12;
+      }
+ 
+      .bar > i{
+        display:block;
+        height:100%;
+        width:72%;
+        background: linear-gradient(90deg, #4da3ff, #a855f7);
+        border-radius:999px;
+        box-shadow: 0 0 22px #4da3ff33;
+        transform-origin:left;
+        animation: fill 2.2s ease both;
+      }
+ 
+      .bar.alt > i{ width:84%; animation-delay: .12s }
+      .bar.third > i{ width:64%; animation-delay: .22s }
+ 
+      @keyframes fill{
+        from{transform:scaleX(0.1); opacity:.2}
+        to{transform:scaleX(1); opacity:1}
+      }
+ 
+      .floaters{
+        position:absolute;
+        inset:0;
+        z-index:2;
+        pointer-events:none;
+      }
+ 
+      .floater{
+        position:absolute;
+        width: 150px;
+        border-radius: 16px;
+        border:1px solid #ffffff18;
+        background: linear-gradient(180deg, #0b1226cc, #0b122677);
+        box-shadow: 0 20px 50px #00000066;
+        padding:10px 10px;
+        backdrop-filter: blur(10px);
+        transform: translateZ(0);
+        animation: drift 6s ease-in-out infinite;
+      }
+ 
+      .floater b{
+        display:block;
+        font-size:12px;
+        letter-spacing:-0.01em;
+      }
+ 
+      .floater span{
+        display:block;
+        font-size:11px;
+        color: var(--muted2);
+        margin-top:4px;
+        font-weight:600;
+      }
+ 
+      .floater.one{
+        top:18px; right: -10px;
+        width: 170px;
+        animation-duration: 6.8s;
+      }
+      .floater.two{
+        bottom: 22px; left: -12px;
+        width: 180px;
+        animation-duration: 7.4s;
+        animation-delay: .2s;
+      }
+      .floater.three{
+        top: 52%; right: -8px;
+        width: 160px;
+        animation-duration: 7.1s;
+        animation-delay: .35s;
+      }
+ 
+      @keyframes drift{
+        0%,100%{ transform: translateY(0px) }
+        50%{ transform: translateY(-10px) }
+      }
+ 
+      @media (prefers-reduced-motion: no-preference){
+        .topbar{
+          opacity:0;
+          transform: translateY(-10px);
+          animation: enterDown .7s cubic-bezier(.2,.8,.2,1) forwards;
+        }
+        .grid{
+          opacity:0;
+          transform: translateY(10px);
+          animation: enterUp .8s cubic-bezier(.2,.8,.2,1) .06s forwards;
+        }
+        h1{
+          opacity:0;
+          transform: translateY(10px);
+          animation: enterUp .85s cubic-bezier(.2,.8,.2,1) .10s forwards;
+        }
+        .subheadline{
+          opacity:0;
+          transform: translateY(10px);
+          animation: enterUp .85s cubic-bezier(.2,.8,.2,1) .16s forwards;
+        }
+        .bullets li{
+          opacity:0;
+          transform: translateY(10px);
+          animation: enterUp .75s cubic-bezier(.2,.8,.2,1) forwards;
+        }
+        .bullets li:nth-child(1){ animation-delay: .22s; }
+        .bullets li:nth-child(2){ animation-delay: .28s; }
+        .bullets li:nth-child(3){ animation-delay: .34s; }
+        .bullets li:nth-child(4){ animation-delay: .40s; }
+        .actions{
+          opacity:0;
+          transform: translateY(10px);
+          animation: enterUp .85s cubic-bezier(.2,.8,.2,1) .44s forwards;
+        }
+        .trust{
+          opacity:0;
+          transform: translateY(10px);
+          animation: enterUp .85s cubic-bezier(.2,.8,.2,1) .50s forwards;
+        }
+        .stage{
+          opacity:0;
+          transform: translateY(10px);
+          animation: enterUp .95s cubic-bezier(.2,.8,.2,1) .18s forwards;
+        }
+      }
+
+      @keyframes enterUp{
+        to{ opacity:1; transform: translateY(0px); }
+      }
+
+      @keyframes enterDown{
+        to{ opacity:1; transform: translateY(0px); }
+      }
+
+      .glow-orb{
+        position:absolute;
+        width: 260px;
+        height: 260px;
+        border-radius:999px;
+        background: radial-gradient(circle at 30% 30%, #ffffff55, transparent 50%),
+          radial-gradient(circle at 40% 40%, #4da3ff55, transparent 60%),
+          radial-gradient(circle at 60% 60%, #a855f755, transparent 60%);
+        filter: blur(18px);
+        opacity:.5;
+        top:-80px;
+        left:-80px;
+        z-index:0;
+      }
+ 
+      @media (max-width: 980px){
+        .grid{grid-template-columns:1fr; gap:22px}
+        .stage{min-height: 420px}
+      }
+ 
+      @media (max-width: 520px){
+        .hero{padding:56px 0 52px}
+        .pill{font-size:12px}
+        .actions{gap:10px}
+        .btn{width:100%; justify-content:center; padding:14px 16px}
+        .stage{min-height: 420px}
+        .mock-body{grid-template-columns: 1fr; }
+        .floater.one{right: 8px}
+        .floater.three{right: 10px}
+        .floater.two{left: 8px}
+      }
+ 
+      @media (prefers-reduced-motion: reduce){
+        .btn,.card,.floater,.bar>i,.aurora,.aurora::after,.topbar,.grid,h1,.subheadline,.bullets li,.actions,.trust,.stage{transition:none; animation:none}
+      }
+    </style>
+  </head>
+ 
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+    <header class="hero">
+      <div class="container">
+        <div class="topbar">
+          <div class="brand">
+            <img class="logo" src="/logo.svg" alt="" aria-hidden="true" />
+            <div>Python IA Hero</div>
+          </div>
+          <div class="pill" role="status" aria-label="Destaque do curso">
+            <span class="dot" aria-hidden="true"></span>
+            Prática + projetos reais desde o primeiro módulo
+          </div>
+        </div>
+ 
+        <div class="grid">
+          <section aria-label="Apresentação do curso">
+            <div class="pill" style="display:inline-flex;">
+              <span class="dot" aria-hidden="true"></span>
+              Curso para iniciantes que querem entrar em tecnologia rápido
+            </div>
+ 
+            <h1>
+              <span class="headline-accent">Aprenda Python do zero</span> e construa projetos reais com IA
+            </h1>
+ 
+            <p class="subheadline">
+              O curso mais prático do Brasil para quem quer entrar em tecnologia sem enrolação
+            </p>
+ 
+            <ul class="bullets">
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-6 2 1-6 9-4-4z"/></svg>
+                </span>
+                <div><strong>+40 horas</strong> de conteúdo direto ao ponto</div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M8 5h8v2H8zM6 9h12v2H6zM8 13h8v2H8zM6 17h12v2H6z"/></svg>
+                </span>
+                <div>Projetos com <strong>Python + IA</strong> desde o módulo 1</div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-0.001-8.001A4 4 0 0 0 12 12zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/></svg>
+                </span>
+                <div>Suporte da comunidade com <strong>+20.000 alunos</strong></div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M6 2h12v6H6zM4 10h16v12H4zM8 14h8v2H8zm0 4h6v2H8z"/></svg>
+                </span>
+                <div>Certificado <strong>reconhecido pelo mercado</strong></div>
+              </li>
+            </ul>
+ 
+            <div class="actions" aria-label="Ações principais">
+              <a class="btn btn-primary" href="#matricula">
+                Quero começar agora
+                <span class="arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M13 5l7 7-7 7" stroke="#06101f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 12H4" stroke="#06101f" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                </span>
+              </a>
+ 
+              <a class="btn btn-secondary" href="#conteudo">
+                Ver o que vou aprender
+                <span class="arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10l5 5 5-5" stroke="#eaf0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
+ 
+            <div class="trust" aria-label="Provas rápidas">
+              <span class="mini"><span class="badge" aria-hidden="true"></span> Acesso imediato</span>
+              <span class="mini">Garantia de satisfação</span>
+              <span class="mini">Atualizações incluídas</span>
+            </div>
+          </section>
+ 
+          <aside class="visual" aria-label="Visual do produto">
+            <div class="glow-orb" aria-hidden="true"></div>
+ 
+            <div class="stage">
+              <div class="mock" role="img" aria-label="Mockup com código Python e indicadores de IA">
+                <div class="mock-top">
+                  <div class="window-dots" aria-hidden="true">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                  </div>
+                  <div class="mock-title">projeto_ia_pratico.py</div>
+                  <div style="width:72px;"></div>
+                </div>
+ 
+                <div class="mock-body">
+                  <div class="code">
+                    <pre><span class="tok-c"># Pipeline prático: dados → modelo → predição</span>
+<span class="tok-k">import</span> <span class="tok-f">pandas</span> <span class="tok-k">as</span> <span class="tok-f">pd</span>
+<span class="tok-k">from</span> <span class="tok-f">sklearn</span><span class="tok-c">.</span><span class="tok-f">model_selection</span> <span class="tok-k">import</span> <span class="tok-f">train_test_split</span>
+<span class="tok-k">from</span> <span class="tok-f">sklearn</span><span class="tok-c">.</span><span class="tok-f">metrics</span> <span class="tok-k">import</span> <span class="tok-f">accuracy_score</span>
+ 
+<span class="tok-f">df</span> <span class="tok-c">=</span> <span class="tok-f">pd</span><span class="tok-c">.</span><span class="tok-f">read_csv</span>(<span class="tok-s">"leads.csv"</span>)
+<span class="tok-f">X</span> <span class="tok-c">=</span> <span class="tok-f">df</span>[[<span class="tok-s">"tempo"</span>, <span class="tok-s">"interacao"</span>, <span class="tok-s">"origem"</span>]]
+<span class="tok-f">y</span> <span class="tok-c">=</span> <span class="tok-f">df</span>[<span class="tok-s">"comprou"</span>]
+ 
+<span class="tok-f">Xtr</span>, <span class="tok-f">Xte</span>, <span class="tok-f">ytr</span>, <span class="tok-f">yte</span> <span class="tok-c">=</span> <span class="tok-f">train_test_split</span>(<span class="tok-f">X</span>, <span class="tok-f">y</span>, <span class="tok-f">test_size</span><span class="tok-c">=</span><span class="tok-n">0.2</span>)
+<span class="tok-f">modelo</span> <span class="tok-c">=</span> <span class="tok-f">...</span>  <span class="tok-c"># do básico ao avançado</span>
+<span class="tok-f">pred</span> <span class="tok-c">=</span> <span class="tok-f">modelo</span><span class="tok-c">.</span><span class="tok-f">predict</span>(<span class="tok-f">Xte</span>)
+<span class="tok-f">acc</span> <span class="tok-c">=</span> <span class="tok-f">accuracy_score</span>(<span class="tok-f">yte</span>, <span class="tok-f">pred</span>)
+<span class="tok-f">print</span>(<span class="tok-s">f"Accuracy: {acc:.2f}"</span>)</pre>
+                  </div>
+ 
+                  <div class="cards">
+                    <div class="card">
+                      <div class="label">
+                        <span>Progresso do aluno</span>
+                        <span class="chip">+ IA</span>
+                      </div>
+                      <div class="metric">
+                        <div class="bar"><i></i></div>
+                        <div class="bar alt"><i></i></div>
+                        <div class="bar third"><i></i></div>
+                      </div>
+                    </div>
+ 
+                    <div class="card">
+                      <div class="label">
+                        <span>Projetos reais</span>
+                        <span style="color:#9be7ff; font-weight:900;">Módulo 1</span>
+                      </div>
+                      <div style="margin-top:10px; display:grid; gap:8px;">
+                        <div style="display:flex; gap:10px; align-items:center;">
+                          <span class="icon" aria-hidden="true" style="width:18px;height:18px;border-radius:7px; box-shadow: 0 0 0 3px #4da3ff12, 0 0 14px #7c3aed2a;">
+                            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-6 2 1-6 9-4-4z"/></svg>
+                          </span>
+                          <span style="font-size:12px; color:#c9d4f0; font-weight:700;">Assistente de IA</span>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                          <span class="icon" aria-hidden="true" style="width:18px;height:18px;border-radius:7px; box-shadow: 0 0 0 3px #4da3ff12, 0 0 14px #7c3aed2a;">
+                            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-6 2 1-6 9-4-4z"/></svg>
+                          </span>
+                          <span style="font-size:12px; color:#c9d4f0; font-weight:700;">API + Automação</span>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                          <span class="icon" aria-hidden="true" style="width:18px;height:18px;border-radius:7px; box-shadow: 0 0 0 3px #4da3ff12, 0 0 14px #7c3aed2a;">
+                            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-6 2 1-6 9-4-4z"/></svg>
+                          </span>
+                          <span style="font-size:12px; color:#c9d4f0; font-weight:700;">Deploy e portfólio</span>
+                        </div>
+                      </div>
+                    </div>
+ 
+                    <div class="card">
+                      <div class="label">
+                        <span>Sinal de mercado</span>
+                        <span style="color:#c3b5fd; font-weight:900;">Alta</span>
+                      </div>
+                      <div style="margin-top:10px; font-size:12px; color:#c9d4f0; font-weight:650; line-height:1.45;">
+                        Aprenda construindo projetos que recrutadores entendem em segundos.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+ 
+              <div class="floaters" aria-hidden="true">
+                <div class="floater one">
+                  <b>Hands-on</b>
+                  <span>Você pratica em cada aula</span>
+                </div>
+                <div class="floater two">
+                  <b>Portfólio</b>
+                  <span>Projetos para mostrar</span>
+                </div>
+                <div class="floater three">
+                  <b>IA aplicada</b>
+                  <span>Do zero ao real</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </header>
+  </body>
+</html>
