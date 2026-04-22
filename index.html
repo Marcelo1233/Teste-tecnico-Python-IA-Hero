@@ -32,7 +32,6 @@
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         color:var(--text);
         background-color: var(--bg);
-        overflow-x:hidden;
         line-height: 1.5;
       }
 
@@ -110,10 +109,12 @@
         grid-template-columns: 1.1fr 0.9fr;
         gap: 48px;
         align-items: center;
+        overflow: visible;
       }
 
       .hero-content {
         max-width: 600px;
+        overflow: visible;
       }
 
       .badge {
@@ -147,14 +148,18 @@
         font-weight: 800;
         margin-bottom: 24px;
         letter-spacing: -2px;
+        overflow: visible;
       }
 
       h1 em {
         font-style: italic;
         background: linear-gradient(90deg, #fff, var(--cyan));
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.3));
+        text-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+        padding: 0 6px;
+        margin: 0 -6px;
       }
 
       .subheadline {
